@@ -21,8 +21,7 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        generateValue: false   # Render asigna PORT automaticamente via variable de entorno
+    # PORT lo inyecta Render automaticamente; no hace falta declararlo
 
     healthCheckPath: /healthz
 
@@ -33,7 +32,7 @@ services:
   - type: web
     name: mp-deathmatch-client
     runtime: static
-    region: frankfurt
+    # Los static sites no admiten region (se sirven por CDN global)
 
     buildCommand: npm install && npm run build --workspace=client
     staticPublishPath: ./client/dist
