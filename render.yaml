@@ -16,7 +16,7 @@ services:
     region: frankfurt        # EU para menor latencia desde Espana
 
     buildCommand: npm install && npm run build --workspace=server
-    startCommand: node server/dist/index.js
+    startCommand: node server/dist/server/src/index.js
 
     envVars:
       - key: NODE_ENV
