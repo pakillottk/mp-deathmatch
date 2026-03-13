@@ -1,0 +1,50 @@
+# render.yaml  --  Blueprint de despliegue para Render.com
+# Documentacion: https://render.com/docs/infrastructure-as-code
+#
+# USO:
+#   1. Conecta tu repo de GitHub en https://render.com
+#   2. Render detecta este fichero automaticamente
+#   3. Despliega: backend (Colyseus) + cliente (Phaser) en un solo blueprint
+#   4. La URL del servidor se inyecta en el cliente via VITE_SERVER_URL (mismo nombre de servicio)
+
+services:
+  # --- Backend: servidor Colyseus ---
+  - type: web
+    name: mp-deathmatch-server
+    runtime: node
+    plan: free               # Tier gratuito: 512 MB RAM, spin-down tras 15min inactividad
+    region: frankfurt        # EU para menor latencia desde Espana
+
+    buildCommand: npm install && npm run build --workspace=server
+    startCommand: node server/dist/src/index.js
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        generateValue: false   # Render asigna PORT automaticamente via variable de entorno
+
+    healthCheckPath: /healthz
+
+    # Aviso: en plan gratuito el servicio duerme tras 15 min sin trafico.
+    # El primer cliente espera ~30-50s de cold start.
+
+  # --- Cliente: sitio estático (Phaser + Vite) ---
+  - type: web
+    name: mp-deathmatch-client
+    runtime: static
+    region: frankfurt
+
+    buildCommand: npm install && npm run build --workspace=client
+    staticPublishPath: ./client/dist
+
+    envVars:
+      # URL del backend (mismo nombre que el servicio de arriba). Si cambias el nombre del server, actualiza aquí.
+      - key: VITE_SERVER_URL
+        value: https://mp-deathmatch-server.onrender.com
+
+    # SPA: cualquier ruta sin archivo sirve index.html (por si añades rutas en el futuro)
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
