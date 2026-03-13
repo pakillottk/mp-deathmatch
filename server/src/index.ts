@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import express from "express";
+import express, { type Request, type Response } from "express";
 import cors from "cors";
 import { createServer } from "http";
 import { Server, matchMaker } from "@colyseus/core";
@@ -20,12 +20,12 @@ const gameServer = new Server({
 gameServer.define(ROOM_NAME, DeathMatchRoom);
 
 // Health check para Render.com
-app.get("/healthz", (_req, res) => {
+app.get("/healthz", (_req: Request, res: Response) => {
   res.json({ status: "ok" });
 });
 
 // Lista de salas activas (para el lobby del cliente)
-app.get("/rooms", async (_req, res) => {
+app.get("/rooms", async (_req: Request, res: Response) => {
   try {
     const rooms = await matchMaker.query({ name: ROOM_NAME });
     res.json(rooms);

@@ -13,11 +13,11 @@
     "@colyseus/ws-transport": "^0.15.3",
     "express": "^4.21.2",
     "cors": "^2.8.5",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.1",
     "@types/node": "^22.13.9",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
